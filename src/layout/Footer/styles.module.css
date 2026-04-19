@@ -76,7 +76,10 @@
   .phone,
   .address,
   .hours {
-    font-size: 32px;
+    font-size: 28px;
+  }
+  .title {
+    font-size: 40px;
   }
 }
 
@@ -86,7 +89,7 @@
   }
 
   .title {
-    font-size: 40px;
+    font-size: 28px;
     margin-bottom: 24px;
   }
 
@@ -106,7 +109,7 @@
   .phone,
   .address,
   .hours {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   .socials img {
