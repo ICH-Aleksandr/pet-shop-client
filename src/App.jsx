@@ -8,6 +8,7 @@ import ProductPage from "./pages/productPage";
 import Sales from "./pages/sales";
 import Cart from "./pages/cart";
 import NotFound from "./pages/notFound";
+import "./App.css";
 
 const router = createBrowserRouter([
   {
