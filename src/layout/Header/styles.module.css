@@ -1,9 +1,5 @@
 .header {
   border-bottom: 1px solid #dddddd;
-  /* position: sticky;
-  top: 0;
-  z-index: 100;
-  background: white; */
 }
 
 .inner {
@@ -35,11 +31,11 @@
 }
 
 .nav a:hover {
-  color: #5e4de1;
+  color: #2093ff;
 }
 
 .active {
-  color: #2e18d2 !important;
+  color: #0d50ff !important;
   font-weight: 500;
 }
 

@@ -30,19 +30,59 @@ function Categories() {
   return (
     <div className={styles.page}>
       <Breadcrumbs
-        aria-label="breadcrumb"
-        sx={{ marginBottom: "40px", fontSize: "16px", fontWeight: "500" }}
+        separator={
+          <span
+            style={{
+              width: "20px",
+              height: "1px",
+              background: "#d9d9d9",
+              display: "block",
+            }}
+          />
+        }
+        sx={{
+          marginBottom: "40px",
+          "& .MuiBreadcrumbs-separator": {
+            marginLeft: 0,
+            marginRight: 0,
+          },
+        }}
       >
         <MuiLink
           component={Link}
           to="/"
           underline="hover"
-          sx={{ color: "text.secondary", fontSize: "16px", fontWeight: "500" }}
+          sx={{
+            px: "16px",
+            py: "8px",
+            border: "1px solid #d9d9d9",
+            borderRadius: "6px",
+            backgroundColor: "#ffffff",
+            color: "#8b8b8b",
+            fontSize: "16px",
+            fontWeight: 500,
+            lineHeight: 1,
+            transition: "all 0.2s ease",
+            "&:hover": {
+              backgroundColor: "#eaeaea",
+            },
+          }}
         >
           Main page
         </MuiLink>
+
         <Typography
-          sx={{ color: "text.primary", fontSize: "16px", fontWeight: "500" }}
+          sx={{
+            px: "16px",
+            py: "8px",
+            border: "1px solid #d9d9d9",
+            borderRadius: "6px",
+            backgroundColor: "#ffffff",
+            color: "#282828",
+            fontSize: "16px",
+            fontWeight: 500,
+            lineHeight: 1,
+          }}
         >
           Categories
         </Typography>
