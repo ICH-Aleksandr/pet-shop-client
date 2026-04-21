@@ -136,11 +136,14 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: #00b628;
+  background: #0D50FF;
   color: #ffffff;
-  font-size: 14px;
-  font-weight: 700;
-  padding: 4px 8px;
+  font-size: 20px;
+  width: 63px;
+  height: 34px;
+  text-align: center;
+  font-weight: 600;
+  padding: 8px 4px;
   border-radius: 6px;
   line-height: 1;
 }
@@ -216,7 +219,7 @@
 
 .priceRow {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 12px;
 }
 

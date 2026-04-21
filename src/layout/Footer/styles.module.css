@@ -16,7 +16,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   gap: 32px;
   margin-bottom: 32px;
 }
@@ -69,8 +69,6 @@
   display: block;
   height: 350px;
 }
-
-/* ---------------------------------- */
 
 @media (max-width: 1024px) {
   .phone,
