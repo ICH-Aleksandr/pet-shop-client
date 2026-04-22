@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,50 +10,83 @@ import styles from "./styles.module.css";
 
 const BASE_URL = "http://localhost:3333";
 
+const initialFetchState = {
+  loading: true,
+  error: null,
+  product: null,
+  category: null,
+};
+
+function fetchReducer(state, action) {
+  switch (action.type) {
+    case "FETCH_START":
+      return initialFetchState;
+    case "FETCH_SUCCESS":
+      return {
+        loading: false,
+        error: null,
+        product: action.product,
+        category: null,
+      };
+    case "FETCH_ERROR":
+      return {
+        loading: false,
+        error: action.error,
+        product: null,
+        category: null,
+      };
+    case "SET_CATEGORY":
+      return { ...state, category: action.category };
+    default:
+      return state;
+  }
+}
+
 function ProductPage() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
 
-  const [product, setProduct] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [{ loading, error, product, category }, fetchDispatch] = useReducer(
+    fetchReducer,
+    initialFetchState,
+  );
 
   const [quantity, setQuantity] = useState(1);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    setCategory(null);
+    fetchDispatch({ type: "FETCH_START" });
 
     axios
       .get(`${BASE_URL}/products/${id}`)
       .then((res) => {
         const data = Array.isArray(res.data) ? res.data[0] : res.data;
         if (!data) {
-          setError("Product not found.");
+          fetchDispatch({ type: "FETCH_ERROR", error: "Product not found." });
           return;
         }
-        setProduct(data);
+        fetchDispatch({ type: "FETCH_SUCCESS", product: data });
 
         if (data.categoryId) {
           axios
             .get(`${BASE_URL}/categories/${data.categoryId}`)
             .then((catRes) => {
               if (catRes.data && catRes.data.category) {
-                setCategory(catRes.data.category);
+                fetchDispatch({
+                  type: "SET_CATEGORY",
+                  category: catRes.data.category,
+                });
               }
             })
             .catch(() => {});
         }
       })
       .catch(() => {
-        setError("Failed to load product. Please try again later.");
-      })
-      .finally(() => {
-        setLoading(false);
+        fetchDispatch({
+          type: "FETCH_ERROR",
+          error: "Failed to load product. Please try again later.",
+        });
       });
   }, [id]);
 
