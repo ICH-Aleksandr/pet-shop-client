@@ -1,11 +1,10 @@
 import { useEffect, useReducer, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../redux/slices/cartSlice";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import MuiLink from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
+import ProductCard from "../../components/ProductCard";
 import styles from "./styles.module.css";
 
 const BASE_URL = "http://localhost:3333";
@@ -42,8 +41,6 @@ function fetchReducer(state, action) {
 
 function CategoryPage() {
   const { id } = useParams();
-  const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items);
 
   const [{ loading, error, category, products }, fetchDispatch] = useReducer(
     fetchReducer,
@@ -54,7 +51,6 @@ function CategoryPage() {
   const [priceTo, setPriceTo] = useState("");
   const [discountOnly, setDiscountOnly] = useState(false);
   const [sortBy, setSortBy] = useState("default");
-  const [hoveredId, setHoveredId] = useState(null);
 
   useEffect(() => {
     fetchDispatch({ type: "FETCH_START" });
@@ -78,26 +74,6 @@ function CategoryPage() {
         });
       });
   }, [id]);
-
-  const handleAddToCart = (e, product) => {
-    e.preventDefault();
-    if (cartItems.some((item) => item.id === product.id)) return;
-    dispatch(
-      addToCart({
-        id: product.id,
-        title: product.title,
-        price: product.discont_price ?? product.price,
-        oldPrice: product.discont_price ? product.price : null,
-        discount: product.discont_price
-          ? Math.round((1 - product.discont_price / product.price) * 100)
-          : null,
-        image: product.image,
-      }),
-    );
-  };
-
-  const discountPercent = (product) =>
-    Math.round((1 - product.discont_price / product.price) * 100);
 
   const filteredProducts = products
     .filter((p) => {
@@ -249,53 +225,7 @@ function CategoryPage() {
           ) : (
             <div className={styles.grid}>
               {filteredProducts.map((product) => (
-                <Link
-                  key={product.id}
-                  to={`/products/${product.id}`}
-                  className={styles.card}
-                  onMouseEnter={() => setHoveredId(product.id)}
-                  onMouseLeave={() => setHoveredId(null)}
-                >
-                  <div className={styles.imageWrapper}>
-                    <img
-                      src={`${BASE_URL}${product.image}`}
-                      alt={product.title}
-                      className={styles.image}
-                    />
-                    {product.discont_price && (
-                      <span className={styles.badge}>
-                        -{discountPercent(product)}%
-                      </span>
-                    )}
-                    {hoveredId === product.id && (
-                      <button
-                        className={`${styles.addBtn} ${cartItems.some((item) => item.id === product.id) ? styles.addBtnAdded : ""}`}
-                        onClick={(e) => handleAddToCart(e, product)}
-                        disabled={cartItems.some(
-                          (item) => item.id === product.id,
-                        )}
-                      >
-                        {cartItems.some((item) => item.id === product.id)
-                          ? "Added"
-                          : "Add to cart"}
-                      </button>
-                    )}
-                  </div>
-
-                  <div className={styles.cardInfo}>
-                    <p className={styles.cardTitle}>{product.title}</p>
-                    <div className={styles.priceRow}>
-                      <span className={styles.price}>
-                        ${product.discont_price ?? product.price}
-                      </span>
-                      {product.discont_price && (
-                        <span className={styles.oldPrice}>
-                          ${product.price}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}

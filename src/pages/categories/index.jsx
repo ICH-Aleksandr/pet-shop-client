@@ -4,6 +4,7 @@ import axios from "axios";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import MuiLink from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
+import CategoryCard from "../../components/CategoryCard";
 import styles from "./styles.module.css";
 
 const BASE_URL = "http://localhost:3333";
@@ -99,20 +100,7 @@ function Categories() {
       {!loading && !error && (
         <div className={styles.grid}>
           {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/categories/${cat.id}`}
-              className={styles.card}
-            >
-              <div className={styles.imageWrapper}>
-                <img
-                  src={`${BASE_URL}${cat.image}`}
-                  alt={cat.title}
-                  className={styles.image}
-                />
-              </div>
-              <p className={styles.cardTitle}>{cat.title}</p>
-            </Link>
+            <CategoryCard key={cat.id} category={cat} />
           ))}
         </div>
       )}

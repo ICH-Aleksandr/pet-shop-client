@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../redux/slices/cartSlice";
 import TextField from "@mui/material/TextField";
+import ProductCard from "../../components/ProductCard";
+import CategoryCard from "../../components/CategoryCard";
 import homeImg from "../../assets/images/home-img.png";
 import firstOrderImg from "../../assets/images/first-order-image.png";
 import styles from "./styles.module.css";
@@ -29,68 +29,6 @@ const textFieldSx = {
     opacity: 1,
   },
 };
-
-const discountPct = (p) => Math.round((1 - p.discont_price / p.price) * 100);
-
-function ProductCard({ product }) {
-  const dispatch = useDispatch();
-  const cartItems = useSelector((s) => s.cart.items);
-  const [hoveredId, setHoveredId] = useState(null);
-
-  const inCart = cartItems.some((i) => i.id === product.id);
-
-  const handleAdd = (e) => {
-    e.preventDefault();
-    if (inCart) return;
-    dispatch(
-      addToCart({
-        id: product.id,
-        title: product.title,
-        price: product.discont_price,
-        oldPrice: product.price,
-        discount: discountPct(product),
-        image: product.image,
-      }),
-    );
-  };
-
-  return (
-    <Link
-      to={`/products/${product.id}`}
-      className={styles.card}
-      onMouseEnter={() => setHoveredId(product.id)}
-      onMouseLeave={() => setHoveredId(null)}
-    >
-      <div className={styles.imageWrapper}>
-        <img
-          src={`${BASE_URL}${product.image}`}
-          alt={product.title}
-          className={styles.image}
-        />
-
-        <span className={styles.badge}>-{discountPct(product)}%</span>
-
-        {hoveredId === product.id && (
-          <button
-            className={`${styles.addBtn} ${inCart ? styles.addBtnAdded : ""}`}
-            onClick={handleAdd}
-            disabled={inCart}
-          >
-            {inCart ? "Added" : "Add to cart"}
-          </button>
-        )}
-      </div>
-
-      <div className={styles.cardInfo}>
-        <p className={styles.cardTitle}>{product.title}</p>
-        <div className={styles.priceRow}>
-          <span className={styles.price}>${product.discont_price}</span>
-          <span className={styles.oldPrice}>${product.price}</span>
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 function Home() {
   const navigate = useNavigate();
@@ -188,20 +126,7 @@ function Home() {
 
         <div className={styles.catGrid}>
           {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/categories/${cat.id}`}
-              className={styles.catCard}
-            >
-              <div className={styles.catImageWrapper}>
-                <img
-                  src={`${BASE_URL}${cat.image}`}
-                  alt={cat.title}
-                  className={styles.catImage}
-                />
-              </div>
-              <p className={styles.catTitle}>{cat.title}</p>
-            </Link>
+            <CategoryCard key={cat.id} category={cat} />
           ))}
         </div>
       </section>

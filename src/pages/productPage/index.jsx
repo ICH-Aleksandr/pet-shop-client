@@ -45,11 +45,15 @@ function fetchReducer(state, action) {
 function ProductPage() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items);
 
   const [{ loading, error, product, category }, fetchDispatch] = useReducer(
     fetchReducer,
     initialFetchState,
+  );
+
+  const productId = product?.id;
+  const isInCart = useSelector((state) =>
+    state.cart.items.some((item) => item.id === productId),
   );
 
   const [quantity, setQuantity] = useState(1);
@@ -92,7 +96,7 @@ function ProductPage() {
 
   const handleAddToCart = () => {
     if (!product) return;
-    if (cartItems.some((item) => item.id === product.id)) return;
+    if (isInCart) return;
     dispatch(
       addToCart({
         id: product.id,
@@ -124,8 +128,6 @@ function ProductPage() {
     }
     return title;
   };
-
-  const isInCart = cartItems.some((item) => item.id === product?.id);
 
   const breadcrumbLinkSx = {
     px: "16px",

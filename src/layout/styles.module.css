@@ -11,3 +11,13 @@
   flex: 1;
   padding: 0px 40px;
 }
+
+@media (max-width: 768px) {
+  .main {
+    margin-top: 40px;
+  }
+
+  .mainHome {
+    margin-top: 0;
+  }
+}

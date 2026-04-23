@@ -49,7 +49,6 @@
 
 .cartContent {
   display: grid;
-
   grid-template-columns: 1.5fr 1fr;
   gap: 32px;
   align-items: flex-start;
@@ -180,7 +179,7 @@
   padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 0 px;
+  gap: 0;
   position: sticky;
 }
 
