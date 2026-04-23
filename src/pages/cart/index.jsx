@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import TextField from "@mui/material/TextField";
@@ -15,7 +15,6 @@ const BASE_URL = "http://localhost:3333";
 
 function Cart() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.items);
 
   const [name, setName] = useState("");
@@ -26,10 +25,10 @@ function Cart() {
   const [showModal, setShowModal] = useState(false);
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
+  const totalPrice = cartItems
+    .reduce((sum, item) => sum + item.price * item.quantity, 0)
+    .toFixed(2)
+    .replace(".", ",");
 
   const validate = () => {
     const errs = {};
@@ -60,7 +59,6 @@ function Cart() {
         products: cartItems,
       })
       .then(() => {
-        dispatch(clearCart());
         setName("");
         setPhone("");
         setEmail("");
@@ -76,7 +74,7 @@ function Cart() {
 
   const closeModal = () => {
     setShowModal(false);
-    navigate("/");
+    dispatch(clearCart());
   };
 
   const textFieldSx = {
@@ -105,6 +103,7 @@ function Cart() {
         <div className={styles.cartBox}>
           <div className={styles.cartHeader}>
             <h1 className={styles.cartTitle}>Shopping cart</h1>
+            <div className={styles.cartHeaderLine} />
             <Link to="/products" className={styles.backBtn}>
               Back to the store
             </Link>
@@ -127,6 +126,7 @@ function Cart() {
       <div className={styles.cartBox}>
         <div className={styles.cartHeader}>
           <h1 className={styles.cartTitle}>Shopping cart</h1>
+          <div className={styles.cartHeaderLine} />
           <Link to="/products" className={styles.backBtn}>
             Back to the store
           </Link>

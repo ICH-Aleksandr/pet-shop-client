@@ -27,7 +27,6 @@ function Sales() {
     axios
       .get(`${BASE_URL}/products/all`)
       .then((res) => {
-        // оставляем только товары со скидкой
         const discounted = res.data.filter((p) => p.discont_price);
         setProducts(discounted);
       })
@@ -160,9 +159,7 @@ function Sales() {
         </div>
       </div>
 
-      {loading && (
-        <div className={styles.statusMessage}>Loading products…</div>
-      )}
+      {loading && <div className={styles.statusMessage}>Loading products…</div>}
       {error && <div className={styles.errorMessage}>{error}</div>}
 
       {!loading && !error && (
@@ -215,9 +212,7 @@ function Sales() {
                       <span className={styles.price}>
                         ${product.discont_price}
                       </span>
-                      <span className={styles.oldPrice}>
-                        ${product.price}
-                      </span>
+                      <span className={styles.oldPrice}>${product.price}</span>
                     </div>
                   </div>
                 </Link>
