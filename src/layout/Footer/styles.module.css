@@ -1,0 +1,128 @@
+.footer {
+  margin-top: auto;
+}
+
+.inner {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0px 40px 80px 40px;
+}
+
+.title {
+  font-size: 64px;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.card {
+  background: #f1f3f4;
+  border-radius: 12px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 20px;
+  font-weight: 500;
+  color: #8b8b8b;
+}
+
+.phone {
+  font-size: 40px;
+  font-weight: 600;
+  color: #282828;
+  text-decoration: none;
+}
+
+.address,
+.hours {
+  font-size: 40px;
+  font-weight: 600;
+  color: #282828;
+}
+
+.socials {
+  display: flex;
+  gap: 16px;
+}
+
+.socials img {
+  width: 43px;
+  height: 43px;
+}
+
+.map {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.map iframe {
+  display: block;
+  height: 350px;
+}
+
+@media (max-width: 1024px) {
+  .phone,
+  .address,
+  .hours {
+    font-size: 28px;
+  }
+  .title {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .inner {
+    padding: 0 24px 60px 24px;
+  }
+
+  .title {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+
+  .grid {
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    padding: 24px;
+  }
+
+  .label {
+    font-size: 16px;
+  }
+
+  .phone,
+  .address,
+  .hours {
+    font-size: 16px;
+  }
+
+  .socials img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .map iframe {
+    width: 100%;
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -8,12 +8,12 @@ import ProductPage from "./pages/productPage";
 import Sales from "./pages/sales";
 import Cart from "./pages/cart";
 import NotFound from "./pages/notFound";
+import "./App.css";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    errorElement: <NotFound />,
     children: [
       { index: true, element: <Home /> },
       { path: "categories", element: <Categories /> },
@@ -22,6 +22,7 @@ const router = createBrowserRouter([
       { path: "products/:id", element: <ProductPage /> },
       { path: "sales", element: <Sales /> },
       { path: "cart", element: <Cart /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);

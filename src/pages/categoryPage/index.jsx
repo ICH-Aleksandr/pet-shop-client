@@ -1,9 +1,236 @@
+import { useEffect, useReducer, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import MuiLink from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
+import ProductCard from "../../components/ProductCard";
 import styles from "./styles.module.css";
 
+const BASE_URL = "http://localhost:3333";
+
+const initialFetchState = {
+  loading: true,
+  error: null,
+  category: null,
+  products: [],
+};
+
+function fetchReducer(state, action) {
+  switch (action.type) {
+    case "FETCH_START":
+      return initialFetchState;
+    case "FETCH_SUCCESS":
+      return {
+        loading: false,
+        error: null,
+        category: action.category,
+        products: action.products,
+      };
+    case "FETCH_ERROR":
+      return {
+        loading: false,
+        error: action.error,
+        category: null,
+        products: [],
+      };
+    default:
+      return state;
+  }
+}
+
 function CategoryPage() {
+  const { id } = useParams();
+
+  const [{ loading, error, category, products }, fetchDispatch] = useReducer(
+    fetchReducer,
+    initialFetchState,
+  );
+
+  const [priceFrom, setPriceFrom] = useState("");
+  const [priceTo, setPriceTo] = useState("");
+  const [discountOnly, setDiscountOnly] = useState(false);
+  const [sortBy, setSortBy] = useState("default");
+
+  useEffect(() => {
+    fetchDispatch({ type: "FETCH_START" });
+    axios
+      .get(`${BASE_URL}/categories/${id}`)
+      .then((res) => {
+        if (res.data.status === "ERR") {
+          fetchDispatch({ type: "FETCH_ERROR", error: res.data.message });
+        } else {
+          fetchDispatch({
+            type: "FETCH_SUCCESS",
+            category: res.data.category,
+            products: res.data.data,
+          });
+        }
+      })
+      .catch(() => {
+        fetchDispatch({
+          type: "FETCH_ERROR",
+          error: "Failed to load products. Please try again later.",
+        });
+      });
+  }, [id]);
+
+  const filteredProducts = products
+    .filter((p) => {
+      const effectivePrice = p.discont_price ?? p.price;
+      if (priceFrom !== "" && effectivePrice < Number(priceFrom)) return false;
+      if (priceTo !== "" && effectivePrice > Number(priceTo)) return false;
+      if (discountOnly && !p.discont_price) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const pa = a.discont_price ?? a.price;
+      const pb = b.discont_price ?? b.price;
+      if (sortBy === "price-asc") return pa - pb;
+      if (sortBy === "price-desc") return pb - pa;
+      return 0;
+    });
+
   return (
     <div className={styles.page}>
-      <h1>Category Page</h1>
+      <Breadcrumbs
+        separator={
+          <span
+            style={{
+              width: "20px",
+              height: "1px",
+              background: "#d9d9d9",
+              display: "block",
+            }}
+          />
+        }
+        sx={{
+          marginBottom: "40px",
+          "& .MuiBreadcrumbs-separator": { marginLeft: 0, marginRight: 0 },
+        }}
+      >
+        <MuiLink
+          component={Link}
+          to="/"
+          underline="hover"
+          sx={{
+            px: "16px",
+            py: "8px",
+            border: "1px solid #d9d9d9",
+            borderRadius: "6px",
+            backgroundColor: "#ffffff",
+            color: "#8b8b8b",
+            fontSize: "16px",
+            fontWeight: 500,
+            lineHeight: 1,
+            transition: "all 0.2s ease",
+            "&:hover": { backgroundColor: "#eaeaea" },
+          }}
+        >
+          Main page
+        </MuiLink>
+
+        <MuiLink
+          component={Link}
+          to="/categories"
+          underline="hover"
+          sx={{
+            px: "16px",
+            py: "8px",
+            border: "1px solid #d9d9d9",
+            borderRadius: "6px",
+            backgroundColor: "#ffffff",
+            color: "#8b8b8b",
+            fontSize: "16px",
+            fontWeight: 500,
+            lineHeight: 1,
+            transition: "all 0.2s ease",
+            "&:hover": { backgroundColor: "#eaeaea" },
+          }}
+        >
+          Categories
+        </MuiLink>
+
+        <Typography
+          sx={{
+            px: "16px",
+            py: "8px",
+            border: "1px solid #d9d9d9",
+            borderRadius: "6px",
+            backgroundColor: "#ffffff",
+            color: "#282828",
+            fontSize: "16px",
+            fontWeight: 500,
+            lineHeight: 1,
+          }}
+        >
+          {category ? category.title : "…"}
+        </Typography>
+      </Breadcrumbs>
+
+      <h1 className={styles.title}>{category ? category.title : ""}</h1>
+
+      <div className={styles.filters}>
+        <div className={styles.priceFilter}>
+          <span className={styles.filterLabel}>Price</span>
+          <input
+            className={styles.priceInput}
+            type="number"
+            placeholder="from"
+            value={priceFrom}
+            onChange={(e) => setPriceFrom(e.target.value)}
+          />
+          <input
+            className={styles.priceInput}
+            type="number"
+            placeholder="to"
+            value={priceTo}
+            onChange={(e) => setPriceTo(e.target.value)}
+          />
+        </div>
+
+        <label className={styles.discountLabel}>
+          <span className={styles.filterLabel}>Discounted items</span>
+          <input
+            type="checkbox"
+            checked={discountOnly}
+            onChange={(e) => setDiscountOnly(e.target.checked)}
+            className={styles.discountCheckbox}
+          />
+        </label>
+
+        <div className={styles.sortWrapper}>
+          <span className={styles.filterLabel}>Sorted</span>
+          <select
+            className={styles.sortSelect}
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="default">by default</option>
+            <option value="price-desc">price: high-low</option>
+            <option value="price-asc">price: low-high</option>
+          </select>
+        </div>
+      </div>
+
+      {loading && <div className={styles.statusMessage}>Loading products…</div>}
+      {error && <div className={styles.errorMessage}>{error}</div>}
+
+      {!loading && !error && (
+        <>
+          {filteredProducts.length === 0 ? (
+            <div className={styles.statusMessage}>
+              No products match your filters.
+            </div>
+          ) : (
+            <div className={styles.grid}>
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
